@@ -36,6 +36,6 @@
 
 ### RESOURCES TO LOOK
 
-- https://pub.dev/packages/ssh
+- https://pub.dev/packages/dartssh2
 - https://github.com/jhagdu/flutter-linux-app/blob/master/Flutter%20Project%20Files/lib/pages/login.dart
 - https://stackabuse.com/executing-shell-commands-with-node-js/
