@@ -3,13 +3,16 @@ import 'dart:io';
 import 'dart:convert';
 
 void main(List<String> args) async {
-  final config_username;
+  final String? configUsername;
   final socket = await SSHSocket.connect('localhost', 22);
+
+  // GET USERNAME
   stdout.write('Username: ');
-  config_username = stdin.readLineSync();
+  configUsername = stdin.readLineSync()!;
+
   final client = SSHClient(
     socket,
-    username: config_username,
+    username: configUsername,
     onPasswordRequest: () {
       stdout.write('Password: ');
       stdin.echoMode = false;
