@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:denizeryilmazhw/pages/page1_view.dart';
+import 'package:denizeryilmazhw/utils/theme.dart';
 
 void main() => runApp(const App());
 
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Lusefull',
       home: const HomePage(),
-      darkTheme: ThemeData.dark(),
+      theme: basicTheme(),
     );
   }
 }
