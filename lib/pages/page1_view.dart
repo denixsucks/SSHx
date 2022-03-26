@@ -22,29 +22,25 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       backgroundColor: Colors.grey[200],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 50.0,
-                width: 100.0,
-                color: Color(0xFF175ECA),
+          InkWell(
+            onTap: () {
+              print("tapped");
+            },
+            child: const Card(
+              margin: EdgeInsets.all(6),
+              child: ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.person),
+                  radius: 15,
+                ),
+                title: Text("Execute Linux Command"),
+                subtitle: Text("Description about method"),
+                trailing: Icon(Icons.backpack_outlined),
               ),
-              Container(
-                height: 50.0,
-                width: 100.0,
-                color: Colors.amber,
-              ),
-              Container(
-                height: 50.0,
-                width: 100.0,
-                color: Color(0xFF8707FF),
-              )
-            ],
-          )
+            ),
+          ),
         ],
       ),
     );
