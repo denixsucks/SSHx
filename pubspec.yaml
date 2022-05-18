@@ -1,5 +1,5 @@
-name: denizeryilmazhw
-description: MPFHW
+name: flutnix
+description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.16.2 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,7 +29,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dartssh2: ">=2.6.0"
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -57,11 +56,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  fonts:
-    - family: NunitoVariable
-      fonts: 
-        - asset: assets/fonts/Nunito_Variable.ttf
-        - asset: assets/fonts/Nunito_Italic.ttf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

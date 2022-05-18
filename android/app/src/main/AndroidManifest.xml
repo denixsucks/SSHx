@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.denixs.denizeryilmazhw">
+    package="com.example.flutnix">
    <application
-        android:label="denizeryilmazhw"
+        android:label="flutnix"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

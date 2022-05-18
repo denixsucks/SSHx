@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(denizeryilmazhw LANGUAGES CXX)
+project(flutnix LANGUAGES CXX)
 
-set(BINARY_NAME "denizeryilmazhw")
+set(BINARY_NAME "flutnix")
 
 cmake_policy(SET CMP0063 NEW)
 

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.denixs" "\0"
-            VALUE "FileDescription", "denizeryilmazhw" "\0"
+            VALUE "CompanyName", "com.example" "\0"
+            VALUE "FileDescription", "flutnix" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "denizeryilmazhw" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.denixs. All rights reserved." "\0"
-            VALUE "OriginalFilename", "denizeryilmazhw.exe" "\0"
-            VALUE "ProductName", "denizeryilmazhw" "\0"
+            VALUE "InternalName", "flutnix" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "flutnix.exe" "\0"
+            VALUE "ProductName", "flutnix" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
