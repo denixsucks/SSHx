@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wifi_configuration_2/wifi_configuration_2.dart';
+import 'package:dartssh2/dartssh2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,12 +30,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  late final String sshName, sshPassword;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  Future<void> _makeSSHConnection() async {
+    print(sshName + " " + sshPassword);
+    final client = SSHClient(
+      await SSHSocket.connect('localhost', 22),
+      username: sshName,
+      onPasswordRequest: () => sshPassword,
+    );
+    print(client);
+    await client.execute("touch ~/kedi.txt");
+    client.close();
   }
 
   @override
@@ -58,12 +64,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(26)),
                 ),
-                hintText: 'Example: root@128.0.0.1',
+                hintText: 'Example: root',
               ),
-              onSaved: (String? value) {},
+              onSaved: (String? value) {
+                sshName = value!;
+              },
             ),
             const UselessMargin(),
             TextFormField(
+              obscureText: true,
               // ignore: prefer_const_constructors
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(10),
@@ -74,15 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 hintText: '*************',
               ),
-              onSaved: (String? value) {},
+              onSaved: (String? value) {
+                sshPassword = value!;
+              },
             ),
             const UselessMargin(),
             OutlinedButton(
-                onPressed: _incrementCounter, child: const Text("Login")),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+                onPressed: _makeSSHConnection, child: const Text("Login")),
           ],
         ),
       ),
