@@ -20,46 +20,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final inputSSHName = Padding(
-  padding: const EdgeInsets.only(bottom: 10),
-  child: TextField(
-    keyboardType: TextInputType.emailAddress,
-    decoration: InputDecoration(
-        labelText: 'SSH Name',
-        hintText: 'Example: root',
-        icon: const Icon(Icons.person),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
-  ),
-);
-
-final inputSSHPassword = Padding(
-  padding: const EdgeInsets.only(bottom: 20),
-  child: TextField(
-    keyboardType: TextInputType.text,
-    obscureText: true,
-    decoration: InputDecoration(
-        labelText: 'SSH Password',
-        hintText: '*************',
-        icon: const Icon(Icons.password),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
-  ),
-);
-final buttonLogin = Padding(
-  padding: const EdgeInsets.only(bottom: 5),
-  child: ButtonTheme(
-    height: 56,
-    child: TextButton(
-      child: const Text('Login',
-          style: TextStyle(color: Colors.black87, fontSize: 20)),
-      onPressed: () => {},
-    ),
-  ),
-);
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -84,6 +44,37 @@ class _MyHomePageState extends State<MyHomePage> {
     client.close();
   }
 
+  final inputSSHName = Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: TextField(
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+          labelText: 'SSH Name',
+          hintText: 'Example: root',
+          icon: const Icon(Icons.person),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+          border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
+    ),
+  );
+
+  final inputSSHPassword = Padding(
+    padding: const EdgeInsets.only(bottom: 20),
+    child: TextField(
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      decoration: InputDecoration(
+          labelText: 'SSH Password',
+          hintText: '*************',
+          icon: const Icon(Icons.password),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+          border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +85,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          children: <Widget>[inputSSHName, inputSSHPassword, buttonLogin],
+          children: <Widget>[
+            inputSSHName,
+            inputSSHPassword,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: ButtonTheme(
+                height: 56,
+                child: TextButton(
+                  child: const Text('Login',
+                      style: TextStyle(color: Colors.black87, fontSize: 20)),
+                  onPressed: () => _makeSSHConnection,
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
