@@ -17,15 +17,14 @@ class _HomeState extends State<Home> {
   String sshIP = '';
   String sshName = '';
   String sshPassword = '';
+  bool isConnectedSSH = false;
 
   @override
   void initState() {
     connection = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
-      // whenevery connection status is changed.
       if (result == ConnectivityResult.wifi) {
-        //there is no any connection
         setState(() {
           isoffline = false;
         });
@@ -45,15 +44,23 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  void sshConnect() async {
+  Future<SSHClient?> sshConnect() async {
     setState(() {});
-    final client = SSHClient(
-      await SSHSocket.connect(sshIP, 22),
-      username: sshName,
-      onPasswordRequest: () => sshPassword,
-    );
-    await client.execute("touch ~/kedi.txt");
-    client.close();
+    SSHClient? client;
+    try {
+      client = SSHClient(
+        await SSHSocket.connect(sshIP, 22),
+        username: sshName,
+        onPasswordRequest: () => sshPassword,
+      );
+      isConnectedSSH = true;
+    } catch (e) {
+      client = null;
+      isConnectedSSH = false;
+      debugPrint("Connection refused");
+      debugPrint("Error:" + e.toString());
+    }
+    return client;
   }
 
 //------------------------------- STATELESS WIDGETS
@@ -90,7 +97,7 @@ class _HomeState extends State<Home> {
               });
             },
             decoration: InputDecoration(
-                labelText: 'SSH Local IP',
+                labelText: 'SSH: Local Machine IP',
                 hintText: '192.168.x.x',
                 icon: const Icon(Icons.computer),
                 contentPadding:
@@ -109,7 +116,7 @@ class _HomeState extends State<Home> {
               });
             },
             decoration: InputDecoration(
-                labelText: 'SSH Name',
+                labelText: 'SSH: Username',
                 hintText: 'Example: root',
                 icon: const Icon(Icons.person),
                 contentPadding:
@@ -129,7 +136,7 @@ class _HomeState extends State<Home> {
             },
             obscureText: true,
             decoration: InputDecoration(
-                labelText: 'SSH Password',
+                labelText: 'SSH: Password',
                 hintText: '*************',
                 icon: const Icon(Icons.password),
                 contentPadding:
@@ -145,7 +152,7 @@ class _HomeState extends State<Home> {
             child: TextButton(
               child: const Text('Login',
                   style: TextStyle(color: Colors.black87, fontSize: 20)),
-              onPressed: () => sshConnect(),
+              onPressed: () => {sshConnect()},
             ),
           ),
         )

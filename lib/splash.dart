@@ -27,7 +27,7 @@ class _SplashState extends State<Splash> {
       body: Center(
         // ignore: avoid_unnecessary_containers
         child: Container(
-          child: const Text('Splash Screen',
+          child: const Text('SSHx',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         ),
       ),
