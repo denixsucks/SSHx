@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutnix/home.dart';
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
   StreamSubscription? connection;
   bool isoffline = false;
   String sshIP = '';
-  String sshName = '';
+  String sshUsername = '';
   String sshPassword = '';
   bool isConnectedSSH = false;
 
@@ -44,23 +45,34 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  Future<SSHClient?> sshConnect() async {
-    setState(() {});
+  sshConnect() async {
     SSHClient? client;
     try {
       client = SSHClient(
         await SSHSocket.connect(sshIP, 22),
-        username: sshName,
+        username: sshUsername,
         onPasswordRequest: () => sshPassword,
       );
       isConnectedSSH = true;
+      _navigateToHome(client);
     } catch (e) {
-      client = null;
-      isConnectedSSH = false;
+      //client = null;
+      //isConnectedSSH = false;
       debugPrint("Connection refused");
       debugPrint("Error:" + e.toString());
+      showDialog(context: context, builder: (context) => const ErrorWidget());
     }
-    return client;
+  }
+
+  _navigateToHome(SSHClient client) async {
+    await Future.delayed(const Duration(milliseconds: 5000), () {});
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => UsefulPage(
+                sshIP: sshIP,
+                sshPassword: sshPassword,
+                sshUsername: sshUsername)));
   }
 
 //------------------------------- STATELESS WIDGETS
@@ -68,7 +80,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Flutnix"),
+        title: const Center(child: Text("SSHx")),
         backgroundColor: Colors.purple,
       ),
       body: Center(
@@ -90,7 +102,7 @@ class _HomeState extends State<Home> {
         Padding(
           padding: const EdgeInsets.all(15),
           child: TextField(
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.emailAddress,
             onChanged: (val) {
               setState(() {
                 sshIP = val;
@@ -112,7 +124,7 @@ class _HomeState extends State<Home> {
             keyboardType: TextInputType.emailAddress,
             onChanged: (val) {
               setState(() {
-                sshName = val;
+                sshUsername = val;
               });
             },
             decoration: InputDecoration(
@@ -148,15 +160,24 @@ class _HomeState extends State<Home> {
         Padding(
           padding: const EdgeInsets.only(bottom: 5),
           child: ButtonTheme(
-            height: 56,
-            child: TextButton(
-              child: const Text('Login',
-                  style: TextStyle(color: Colors.black87, fontSize: 20)),
-              onPressed: () => {sshConnect()},
-            ),
-          ),
+              height: 56,
+              child: TextButton(
+                  child: const Text('Login',
+                      style: TextStyle(color: Colors.black87, fontSize: 20)),
+                  onPressed: () => {sshConnect()})),
         )
       ])),
+    );
+  }
+}
+
+class ErrorWidget extends StatelessWidget {
+  const ErrorWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const AlertDialog(
+      title: Text("Couldnt connect SSH..."),
     );
   }
 }

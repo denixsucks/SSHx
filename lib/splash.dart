@@ -12,11 +12,11 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _navigateToLogin();
   }
 
-  _navigateToHome() async {
-    await Future.delayed(const Duration(milliseconds: 2000), () {});
+  _navigateToLogin() async {
+    await Future.delayed(const Duration(milliseconds: 3000), () {});
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const Home()));
   }
@@ -24,13 +24,21 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        // ignore: avoid_unnecessary_containers
-        child: Container(
-          child: const Text('SSHx',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ),
-      ),
-    );
+        backgroundColor: Colors.purple,
+        body: Center(
+            child: ListView(shrinkWrap: true, children: const [
+          Center(
+              child: Text('SSHx',
+                  style: TextStyle(
+                      fontSize: 62,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+          Center(
+              child: Text('Loading....',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white))),
+        ])));
   }
 }
