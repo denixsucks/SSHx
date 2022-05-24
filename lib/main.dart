@@ -1,107 +1,167 @@
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutnix',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: const MyHomePage(title: 'Flutnix'),
+      home: Home(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
+class Home extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  late final String sshName, sshPassword;
+//----------------------------- STATES
+class _HomeState extends State<Home> {
+  StreamSubscription? connection;
+  bool isoffline = false;
+  String sshIP = '';
+  String sshName = '';
+  String sshPassword = '';
 
-  Future<void> _makeSSHConnection() async {
-    print(sshName + " " + sshPassword);
+  @override
+  void listenTextBox() {}
+
+  @override
+  void initState() {
+    connection = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // whenevery connection status is changed.
+      if (result == ConnectivityResult.wifi) {
+        //there is no any connection
+        setState(() {
+          isoffline = false;
+        });
+      } else {
+        //connection is from wifi
+        setState(() {
+          isoffline = true;
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    connection!.cancel();
+    super.dispose();
+  }
+
+  void sshConnect() async {
+    setState(() {});
     final client = SSHClient(
-      await SSHSocket.connect('localhost', 22),
+      await SSHSocket.connect('192.168.3.107', 22),
       username: sshName,
       onPasswordRequest: () => sshPassword,
     );
-    print(client);
     await client.execute("touch ~/kedi.txt");
     client.close();
   }
 
-  final inputSSHName = Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: TextField(
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-          labelText: 'SSH Name',
-          hintText: 'Example: root',
-          icon: const Icon(Icons.person),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
-    ),
-  );
-
-  final inputSSHPassword = Padding(
-    padding: const EdgeInsets.only(bottom: 20),
-    child: TextField(
-      keyboardType: TextInputType.text,
-      obscureText: true,
-      decoration: InputDecoration(
-          labelText: 'SSH Password',
-          hintText: '*************',
-          icon: const Icon(Icons.password),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(50.0))),
-    ),
-  );
-
+//------------------------------- STATELESS WIDGETS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Flutnix"),
+        backgroundColor: Colors.purple,
       ),
       body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          children: <Widget>[
-            inputSSHName,
-            inputSSHPassword,
-            Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: ButtonTheme(
-                height: 56,
-                child: TextButton(
-                  child: const Text('Login',
-                      style: TextStyle(color: Colors.black87, fontSize: 20)),
-                  onPressed: () => _makeSSHConnection,
-                ),
-              ),
-            )
-          ],
+          child: ListView(children: [
+        Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(bottom: 30),
+          color: isoffline ? Colors.red : Colors.lightGreen,
+          //red color on offline, green on online
+          padding: EdgeInsets.all(10),
+          child: Text(
+            isoffline ? "Device is Offline" : "Device is Online",
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: TextField(
+            keyboardType: TextInputType.text,
+            onChanged: (val) {
+              setState(() {
+                sshIP = val;
+              });
+            },
+            decoration: InputDecoration(
+                labelText: 'SSH Local IP',
+                hintText: '192.168.x.x',
+                icon: const Icon(Icons.password),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.0))),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: TextField(
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (val) {
+              setState(() {
+                sshName = val;
+              });
+            },
+            decoration: InputDecoration(
+                labelText: 'SSH Name',
+                hintText: 'Example: root',
+                icon: const Icon(Icons.person),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.0))),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: TextField(
+            keyboardType: TextInputType.text,
+            onChanged: (val) {
+              setState(() {
+                sshPassword = val;
+              });
+            },
+            obscureText: true,
+            decoration: InputDecoration(
+                labelText: 'SSH Password',
+                hintText: '*************',
+                icon: const Icon(Icons.password),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.0))),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: ButtonTheme(
+            height: 56,
+            child: TextButton(
+              child: const Text('Login',
+                  style: TextStyle(color: Colors.black87, fontSize: 20)),
+              onPressed: () => sshConnect(),
+            ),
+          ),
+        )
+      ])),
     );
   }
 }
