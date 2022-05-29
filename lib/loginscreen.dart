@@ -18,7 +18,6 @@ class _HomeState extends State<Home> {
   String sshIP = '';
   String sshUsername = '';
   String sshPassword = '';
-  bool isConnectedSSH = false;
 
   @override
   void initState() {
@@ -53,7 +52,6 @@ class _HomeState extends State<Home> {
         username: sshUsername,
         onPasswordRequest: () => sshPassword,
       );
-      isConnectedSSH = true;
       _navigateToHome(client);
     } catch (e) {
       //client = null;

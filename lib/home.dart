@@ -18,16 +18,18 @@ class UsefulPage extends StatefulWidget {
 }
 
 class _UsefulState extends State<UsefulPage> {
+  String commandSSH = '';
+  String outCommand = '';
+  bool isConnected = false;
   late SSHClient client;
-  late String commandSSH;
-  late String outCommand;
+
   @override
   initState() {
     connectSSH();
     super.initState();
   }
 
-  connectSSH() async {
+  Future<void> connectSSH() async {
     client = SSHClient(
       await SSHSocket.connect(widget.sshIP, 22),
       username: widget.sshUsername,
@@ -35,44 +37,73 @@ class _UsefulState extends State<UsefulPage> {
     );
   }
 
-  testLmao(String commandSSH) async {
-    final uptime = await client.run('uptime', stderr: false);
-    debugPrint(utf8.decode(uptime));
-    final command = await client.run(commandSSH);
-    debugPrint(utf8.decode(command));
-    //final shutdown = await client.run('shutdown now');
-    //debugPrint(utf8.decode(shutdown));
+  executeCommand(String commandSSH) async {
+    if (commandSSH.isEmpty) {
+      // no code
+    } else {
+      final command = await client.run(commandSSH);
+      outCommand = utf8.decode(command);
+      debugPrint(outCommand);
+    }
   }
+
+  appendText(String text) {
+    outCommand += outCommand + "\n";
+  }
+
+  final _commandController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text("SSHx")),
-        backgroundColor: Colors.purple,
-      ),
-      body: Center(
-          child: ListView(children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: TextField(
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (val) {
-              setState(() => commandSSH = val.toString());
-            },
-            decoration: const InputDecoration(hintText: 'Enter command.'),
+        appBar: AppBar(
+          title: const Center(child: Text("SSHx")),
+          backgroundColor: Colors.purple,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(color: Colors.white),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: Container(
+                width: double.infinity,
+                child: Text(
+                  outCommand,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.black87, //remove color to make it transpatent
+                    border: Border.all(
+                        style: BorderStyle.solid, color: Colors.black)),
+              )),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: TextField(
+                  keyboardType: TextInputType.text,
+                  controller: _commandController,
+                  onChanged: (val) {
+                    commandSSH = val;
+                  },
+                  decoration: InputDecoration(
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          executeCommand(commandSSH);
+                          appendText(outCommand);
+                          _commandController.clear();
+                        },
+                        child: const Icon(Icons.send),
+                      ),
+                      labelText: 'Command',
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 25, vertical: 20),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50.0))),
+                ),
+              ),
+            ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: ButtonTheme(
-              height: 56,
-              child: TextButton(
-                  child: const Text('Shutdown Computer',
-                      style: TextStyle(color: Colors.black87, fontSize: 20)),
-                  onPressed: () => {testLmao(commandSSH)})),
-        ),
-      ])),
-    );
+        ));
+
+    // TEXT BOX FOR COMMANDS
   }
 }
