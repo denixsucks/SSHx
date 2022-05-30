@@ -1,4 +1,4 @@
-import 'package:sshx/loginscreen.dart';
+import 'package:flutnix/loginscreen.dart';
 import 'package:flutter/material.dart';
 
 class Splash extends StatefulWidget {

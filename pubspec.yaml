@@ -1,4 +1,4 @@
-name: sshx
+name: flutnix
 description: Basic SSH Client.
 
 # The following line prevents the package from being accidentally published to

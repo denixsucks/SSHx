@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:sshx/splash.dart';
+import 'package:flutnix/splash.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {

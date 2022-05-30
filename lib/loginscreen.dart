@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:sshx/home.dart';
+import 'package:flutnix/home.dart';
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 
