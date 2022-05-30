@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutnix/home.dart';
+import 'package:sshx/home.dart';
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 
@@ -29,7 +29,6 @@ class _HomeState extends State<Home> {
           isoffline = false;
         });
       } else {
-        //connection is from wifi
         setState(() {
           isoffline = true;
         });
@@ -78,7 +77,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("SSHx")),
+        title: const Center(child: Text("SSHx Alpha 0.0.1")),
         backgroundColor: Colors.purple,
       ),
       body: Center(

@@ -1,4 +1,4 @@
-import 'package:flutnix/loginscreen.dart';
+import 'package:sshx/loginscreen.dart';
 import 'package:flutter/material.dart';
 
 class Splash extends StatefulWidget {
@@ -32,6 +32,12 @@ class _SplashState extends State<Splash> {
                   style: TextStyle(
                       fontSize: 62,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white))),
+          Center(
+              child: Text('version Alpha 0.0.1',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.normal,
                       color: Colors.white))),
           Center(
               child: Text('Loading....',

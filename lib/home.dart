@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 
@@ -20,36 +21,62 @@ class UsefulPage extends StatefulWidget {
 class _UsefulState extends State<UsefulPage> {
   String commandSSH = '';
   String outCommand = '';
+  String fullOutput = '';
+  String dir = '';
+  String comp = '';
+
   bool isConnected = false;
   late SSHClient client;
 
   @override
   initState() {
-    connectSSH();
+    if (isConnected == false) {
+      connectSSH();
+    }
+
     super.initState();
+    setState(() {});
+  }
+
+  waitForSeconds(int milsec) async {
+    await Future.delayed(Duration(milliseconds: milsec), () {});
   }
 
   Future<void> connectSSH() async {
+    //CONNECT
     client = SSHClient(
       await SSHSocket.connect(widget.sshIP, 22),
       username: widget.sshUsername,
       onPasswordRequest: () => widget.sshPassword,
     );
+
+    isConnected = true;
+    //GET COMPUTER NAME
+    final compname = await client.run('uname -n', stderr: false);
+    comp = utf8.decode(compname);
+    comp = comp.replaceAll(RegExp(r"\s+"), "");
+    comp = comp + '@' + widget.sshUsername;
   }
 
   executeCommand(String commandSSH) async {
     if (commandSSH.isEmpty) {
       // no code
+    } else if (commandSSH == 'clear') {
+      fullOutput = ' ';
+      outCommand = ' ';
     } else {
       final command = await client.run(commandSSH);
       outCommand = utf8.decode(command);
-      debugPrint(outCommand);
+      waitForSeconds(200);
+      appendText(outCommand);
+      commandSSH = '';
+      outCommand = '';
+      setState(() {});
     }
   }
 
-  appendText(String text) {
-    outCommand += outCommand + "\n";
-  }
+  appendText(String text) async =>
+      fullOutput += '$comp > $commandSSH\n$outCommand\n';
 
   final _commandController = TextEditingController();
 
@@ -57,7 +84,7 @@ class _UsefulState extends State<UsefulPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("SSHx")),
+          title: const Center(child: Text("SSHx Alpha 0.0.1")),
           backgroundColor: Colors.purple,
         ),
         body: Container(
@@ -67,12 +94,15 @@ class _UsefulState extends State<UsefulPage> {
               Expanded(
                   child: Container(
                 width: double.infinity,
-                child: Text(
-                  outCommand,
-                  style: const TextStyle(color: Colors.white),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(
+                    fullOutput,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
                 decoration: BoxDecoration(
-                    color: Colors.black87, //remove color to make it transpatent
+                    color: Colors.black87,
                     border: Border.all(
                         style: BorderStyle.solid, color: Colors.black)),
               )),
@@ -87,9 +117,11 @@ class _UsefulState extends State<UsefulPage> {
                   decoration: InputDecoration(
                       suffixIcon: InkWell(
                         onTap: () {
-                          executeCommand(commandSSH);
-                          appendText(outCommand);
-                          _commandController.clear();
+                          setState(() {
+                            executeCommand(commandSSH);
+
+                            _commandController.clear();
+                          });
                         },
                         child: const Icon(Icons.send),
                       ),
